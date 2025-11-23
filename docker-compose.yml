@@ -28,10 +28,10 @@ services:
       - ENVIRONMENT=production
 
       # Database
-      - DB_HOST=postgres
+      - DB_HOST=postgres_server
       - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      - DB_USER=shoel
+      - DB_PASSWORD=qwerty
       - DB_NAME=meetapp
       - DB_SSLMODE=disable
       - DB_MAX_CONNECTIONS=25

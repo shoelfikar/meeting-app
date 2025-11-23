@@ -1,0 +1,307 @@
+# ============================================
+# ROOT PROJECT GITIGNORE
+# ============================================
+
+# ============================================
+# MARKDOWN FILES (Root Only)
+# ============================================
+# Ignore all .md files in root directory
+/*.md
+
+# But keep README.md
+!README.md
+!/README.MD
+!/readme.md
+
+# ============================================
+# FRONTEND (React + Vite)
+# ============================================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.cache/
+
+# Frontend env files
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/.env.development
+
+# Frontend logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Frontend test coverage
+frontend/coverage/
+
+# ============================================
+# BACKEND (Go)
+# ============================================
+# Go binaries
+backend/bin/
+backend/*.exe
+backend/*.exe~
+backend/*.dll
+backend/*.so
+backend/*.dylib
+
+# Go test binary, built with `go test -c`
+backend/*.test
+
+# Go output of go build
+backend/main
+backend/server
+backend/meet-app
+
+# Go vendor directory
+backend/vendor/
+
+# Backend build folder
+backend/public/
+
+# Backend env file
+backend/.env
+backend/.env.local
+backend/.env.production
+
+# Go workspace file
+backend/go.work
+
+# ============================================
+# DATABASE & STORAGE
+# ============================================
+# PostgreSQL
+*.sql.gz
+*.sql.backup
+pgdata/
+postgres-data/
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Redis
+dump.rdb
+appendonly.aof
+
+# MinIO / Object storage
+minio-data/
+.minio.sys/
+
+# ============================================
+# LOGS
+# ============================================
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ============================================
+# ENVIRONMENT & CONFIG
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# Secrets
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+.secrets/
+
+# ============================================
+# IDE & EDITORS
+# ============================================
+# VSCode
+.vscode/
+!.vscode/settings.json.example
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains IDEs (WebStorm, GoLand, etc)
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ============================================
+# OPERATING SYSTEM
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# DOCKER
+# ============================================
+# Docker volumes (if using local volumes)
+docker-volumes/
+
+# ============================================
+# BUILD & DISTRIBUTION
+# ============================================
+dist/
+build/
+out/
+tmp/
+temp/
+
+# ============================================
+# PACKAGE MANAGERS
+# ============================================
+# Node
+node_modules/
+package-lock.json.lock
+yarn.lock.lock
+
+# Go
+go.sum.lock
+
+# ============================================
+# TESTING & COVERAGE
+# ============================================
+coverage/
+*.cover
+*.coverage
+.nyc_output/
+test-results/
+junit.xml
+
+# ============================================
+# MISC
+# ============================================
+# Certificates & Keys (production)
+ssl/
+certs/
+
+# Backups
+*.bak
+*.backup
+*.old
+*.orig
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Temporary files
+*.tmp
+*.temp
+
+# PID files
+*.pid
+
+# Lock files (except package managers)
+*.lock
+!package-lock.json
+!yarn.lock
+!pnpm-lock.yaml
+!go.sum
+
+# Cache
+.cache/
+*.cache
+
+# Documentation builds (if using static site generators)
+docs/.vitepress/cache
+docs/.vitepress/dist
+
+# Terraform (if using for infrastructure)
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Ansible (if using for deployment)
+*.retry
+
+# ============================================
+# PROJECT SPECIFIC
+# ============================================
+# Uploaded files (if storing locally during dev)
+uploads/
+media/
+recordings/
+
+# Generated files
+generated/
+
+# Migration backups
+migrations/*.backup
+
+# Scripts output
+scripts/output/
+
+# Local development scripts
+local.sh
+dev.sh
+test.local.sh
+deploy.sh
+build.sh

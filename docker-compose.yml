@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # Redis Cache & Pub/Sub
+  redis:
+    image: redis:7-alpine
+    container_name: meet-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal-network
+
+  # MinIO (S3-compatible storage for recordings)
+  minio:
+    image: minio/minio:latest
+    container_name: meet-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"  # API
+      - "9001:9001"  # Console
+    volumes:
+      - minio_data:/data
+    networks:
+      - internal-network
+
+  # Backend API (uncomment when ready)
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: meet-backend
+  #   restart: unless-stopped
+  #   environment:
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - JWT_SECRET=your-super-secret-key
+  #     - MINIO_ENDPOINT=minio:9000
+  #     - MINIO_ACCESS_KEY=minioadmin
+  #     - MINIO_SECRET_KEY=minioadmin123
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - internal-network
+  #   depends_on:
+  #     - redis
+  #     - minio
+
+  # Frontend (uncomment when ready)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: meet-frontend
+  #   restart: unless-stopped
+  #   environment:
+  #     - VITE_API_URL=http://localhost:8080
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - internal-network
+  #   depends_on:
+  #     - backend
+
+networks:
+  internal-network:
+    external: true
+
+volumes:
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local

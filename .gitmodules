@@ -1,0 +1,6 @@
+[submodule "meet-app-frontend"]
+	path = meet-app-frontend
+	url = git@github.com:shoelfikar/meet-app-frontend.git
+[submodule "meet-app-backend"]
+	path = meet-app-backend
+	url = git@github.com:shoelfikar/meet-app-backend.git

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .video-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .video-active {
+            box-shadow: 0 0 0 3px #10b981;
+        }
+        .participant-card {
+            cursor: pointer;
+        }
+        .participant-card .pin-button {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .participant-card:hover .pin-button {
+            opacity: 1;
+        }
+        .pinned-indicator {
+            background: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 h-screen overflow-hidden">
+
+    <!-- Header -->
+    <div class="bg-gray-800 px-6 py-3 flex items-center justify-between border-b border-gray-700">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-video text-blue-500 text-xl"></i>
+                <h1 class="text-white font-semibold text-lg">Meeting Room</h1>
+            </div>
+            <span class="text-gray-400 text-sm">"</span>
+            <span class="text-gray-300 text-sm">12:45 PM</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 bg-gray-700 px-3 py-2 rounded-lg">
+                <i class="fas fa-users text-gray-300"></i>
+                <span class="text-white text-sm">8 Peserta</span>
+            </div>
+            <button class="text-gray-300 hover:text-white transition">
+                <i class="fas fa-cog text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex h-[calc(100vh-140px)]">
+
+        <!-- Video Grid Area -->
+        <div class="flex-1 p-4 overflow-y-auto">
+            <!-- Main Speaker View -->
+            <div class="mb-4">
+                <div class="relative bg-gray-800 rounded-xl overflow-hidden aspect-video video-active">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-white text-4xl font-bold">JD</span>
+                            </div>
+                            <p class="text-white text-lg font-semibold">John Doe (You)</p>
+                        </div>
+                    </div>
+                    <!-- Video Controls Overlay -->
+                    <div class="absolute top-4 right-4 flex space-x-2">
+                        <button class="bg-gray-900 bg-opacity-70 text-white p-2 rounded-lg hover:bg-opacity-90 transition">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                    <!-- Name Badge -->
+                    <div class="absolute bottom-4 left-4 bg-gray-900 bg-opacity-70 px-3 py-1 rounded-lg">
+                        <p class="text-white text-sm font-medium flex items-center">
+                            <i class="fas fa-microphone-slash text-red-500 mr-2"></i>
+                            John Doe (You)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Participant Grid -->
+            <div class="grid grid-cols-4 gap-3">
+                <!-- Participant 1 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="Alice Smith" data-initials="AS" data-color="bg-purple-600" data-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-mic="on">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">AS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pin Button -->
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone text-green-500 mr-1 text-xs"></i>
+                            Alice Smith
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Participant 2 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="Bob Johnson" data-initials="BJ" data-color="bg-pink-600" data-gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" data-mic="off">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">BJ</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone-slash text-red-500 mr-1 text-xs"></i>
+                            Bob Johnson
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Participant 3 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="Carol Davis" data-initials="CD" data-color="bg-cyan-600" data-gradient="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" data-mic="on">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-cyan-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">CD</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone text-green-500 mr-1 text-xs"></i>
+                            Carol Davis
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Participant 4 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="David Wilson" data-initials="DW" data-color="bg-orange-600" data-gradient="linear-gradient(135deg, #fa709a 0%, #fee140 100%)" data-mic="on">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">DW</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone text-green-500 mr-1 text-xs"></i>
+                            David Wilson
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Participant 5 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="Emma Brown" data-initials="EB" data-color="bg-teal-600" data-gradient="linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" data-mic="off">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">EB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone-slash text-red-500 mr-1 text-xs"></i>
+                            Emma Brown
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Participant 6 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="Frank Miller" data-initials="FM" data-color="bg-amber-600" data-gradient="linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)" data-mic="on">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">FM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone text-green-500 mr-1 text-xs"></i>
+                            Frank Miller
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Participant 7 -->
+                <div class="participant-card relative bg-gray-800 rounded-lg overflow-hidden aspect-video" data-participant="Grace Taylor" data-initials="GT" data-color="bg-rose-600" data-gradient="linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" data-mic="off">
+                    <div class="video-placeholder w-full h-full flex items-center justify-center" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-rose-600 rounded-full flex items-center justify-center mx-auto">
+                                <span class="text-white text-2xl font-bold">GT</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="pin-button absolute top-2 right-2 bg-gray-900 bg-opacity-80 hover:bg-blue-600 text-white p-2 rounded-full transition" onclick="pinParticipant(this)">
+                        <i class="fas fa-thumbtack text-xs"></i>
+                    </button>
+                    <div class="absolute bottom-2 left-2 bg-gray-900 bg-opacity-70 px-2 py-1 rounded">
+                        <p class="text-white text-xs font-medium flex items-center">
+                            <i class="fas fa-microphone-slash text-red-500 mr-1 text-xs"></i>
+                            Grace Taylor
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar (Chat/Participants) -->
+        <div class="w-80 bg-gray-800 border-l border-gray-700 hidden lg:flex flex-col" id="sidebar">
+            <!-- Tab Header -->
+            <div class="flex border-b border-gray-700">
+                <button class="flex-1 px-4 py-3 text-white bg-gray-700 font-medium transition" id="tab-people">
+                    <i class="fas fa-users mr-2"></i>Peserta
+                </button>
+                <button class="flex-1 px-4 py-3 text-gray-400 hover:text-white transition" id="tab-chat">
+                    <i class="fas fa-comment mr-2"></i>Chat
+                </button>
+            </div>
+
+            <!-- Participants List -->
+            <div class="flex-1 overflow-y-auto p-4" id="people-panel">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">JD</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">John Doe (You)</p>
+                                <p class="text-gray-400 text-xs">Host</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone-slash text-red-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">AS</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">Alice Smith</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone text-green-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">BJ</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">Bob Johnson</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone-slash text-red-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">CD</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">Carol Davis</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone text-green-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">DW</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">David Wilson</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone text-green-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">EB</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">Emma Brown</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone-slash text-red-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">FM</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">Frank Miller</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone text-green-500"></i>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-rose-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">GT</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium text-sm">Grace Taylor</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-microphone-slash text-red-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Panel (Hidden by default) -->
+            <div class="flex-1 overflow-y-auto p-4 hidden" id="chat-panel">
+                <div class="space-y-3">
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <div class="flex items-start space-x-2">
+                            <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white text-xs font-bold">AS</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-white font-medium text-sm">Alice Smith</p>
+                                <p class="text-gray-300 text-sm mt-1">Hello everyone!</p>
+                                <p class="text-gray-500 text-xs mt-1">12:30 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <div class="flex items-start space-x-2">
+                            <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white text-xs font-bold">CD</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-white font-medium text-sm">Carol Davis</p>
+                                <p class="text-gray-300 text-sm mt-1">Great to see everyone here!</p>
+                                <p class="text-gray-500 text-xs mt-1">12:35 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-gray-700 hidden" id="chat-input">
+                <div class="flex space-x-2">
+                    <input type="text" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Control Bar -->
+    <div class="bg-gray-800 px-6 py-3 border-t border-gray-700">
+        <div class="flex items-center justify-between">
+            <!-- Left Controls -->
+            <div class="flex items-center space-x-2">
+                <div class="text-gray-400 text-sm">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span>45:32</span>
+                </div>
+            </div>
+
+            <!-- Center Controls -->
+            <div class="flex items-center space-x-3">
+                <!-- Microphone -->
+                <button class="group relative bg-gray-700 hover:bg-red-600 text-white rounded-full transition duration-200 flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-microphone text-base"></i>
+                    <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Matikan Mic
+                    </span>
+                </button>
+
+                <!-- Camera -->
+                <button class="group relative bg-gray-700 hover:bg-red-600 text-white rounded-full transition duration-200 flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-video text-base"></i>
+                    <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Matikan Kamera
+                    </span>
+                </button>
+
+                <!-- Screen Share -->
+                <button class="group relative bg-gray-700 hover:bg-blue-600 text-white rounded-full transition duration-200 flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-desktop text-base"></i>
+                    <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Bagikan Layar
+                    </span>
+                </button>
+
+                <!-- Reactions -->
+                <button class="group relative bg-gray-700 hover:bg-yellow-600 text-white rounded-full transition duration-200 flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-smile text-base"></i>
+                    <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Reaksi
+                    </span>
+                </button>
+
+                <!-- More Options -->
+                <button class="group relative bg-gray-700 hover:bg-gray-600 text-white rounded-full transition duration-200 flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-ellipsis-v text-base"></i>
+                    <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Opsi Lain
+                    </span>
+                </button>
+
+                <!-- Leave Meeting -->
+                <button class="group relative bg-red-600 hover:bg-red-700 text-white rounded-full transition duration-200 flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-phone-slash text-base"></i>
+                    <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Tinggalkan Meeting
+                    </span>
+                </button>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="flex items-center space-x-2">
+                <!-- Toggle Sidebar -->
+                <button class="bg-gray-700 hover:bg-gray-600 text-white rounded-full transition flex items-center justify-center" style="width: 45px; height: 45px;" onclick="toggleSidebar()">
+                    <i class="fas fa-users text-base"></i>
+                </button>
+
+                <!-- View Options -->
+                <button class="bg-gray-700 hover:bg-gray-600 text-white rounded-full transition flex items-center justify-center" style="width: 45px; height: 45px;">
+                    <i class="fas fa-th text-base"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        const tabPeople = document.getElementById('tab-people');
+        const tabChat = document.getElementById('tab-chat');
+        const peoplePanel = document.getElementById('people-panel');
+        const chatPanel = document.getElementById('chat-panel');
+        const chatInput = document.getElementById('chat-input');
+
+        tabPeople.addEventListener('click', () => {
+            tabPeople.classList.add('bg-gray-700', 'text-white');
+            tabPeople.classList.remove('text-gray-400');
+            tabChat.classList.remove('bg-gray-700', 'text-white');
+            tabChat.classList.add('text-gray-400');
+
+            peoplePanel.classList.remove('hidden');
+            chatPanel.classList.add('hidden');
+            chatInput.classList.add('hidden');
+        });
+
+        tabChat.addEventListener('click', () => {
+            tabChat.classList.add('bg-gray-700', 'text-white');
+            tabChat.classList.remove('text-gray-400');
+            tabPeople.classList.remove('bg-gray-700', 'text-white');
+            tabPeople.classList.add('text-gray-400');
+
+            chatPanel.classList.remove('hidden');
+            peoplePanel.classList.add('hidden');
+            chatInput.classList.remove('hidden');
+        });
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+
+        // Update time
+        let seconds = 2732; // 45:32
+        setInterval(() => {
+            seconds++;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            const timeDisplay = document.querySelector('.fa-clock').nextElementSibling;
+            timeDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+
+        // Pin Participant Function
+        let pinnedParticipant = null;
+
+        function pinParticipant(button) {
+            const participantCard = button.closest('.participant-card');
+            const participantName = participantCard.getAttribute('data-participant');
+            const participantInitials = participantCard.getAttribute('data-initials');
+            const participantColor = participantCard.getAttribute('data-color');
+            const participantGradient = participantCard.getAttribute('data-gradient');
+            const participantMic = participantCard.getAttribute('data-mic');
+
+            // Main speaker area
+            const mainSpeaker = document.querySelector('.video-active');
+            const mainSpeakerContainer = mainSpeaker.querySelector('.video-placeholder');
+            const mainSpeakerAvatar = mainSpeaker.querySelector('.rounded-full');
+            const mainSpeakerName = mainSpeaker.querySelectorAll('p');
+
+            // Get current main speaker info
+            const currentMainName = mainSpeakerName[0].textContent;
+            const currentMainInitials = mainSpeakerAvatar.querySelector('span').textContent;
+
+            // Update main speaker with pinned participant
+            if (participantGradient) {
+                mainSpeakerContainer.style.background = participantGradient;
+            } else {
+                mainSpeakerContainer.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+
+            // Update main speaker avatar
+            mainSpeakerAvatar.className = `w-24 h-24 ${participantColor} rounded-full flex items-center justify-center mx-auto mb-3`;
+            mainSpeakerAvatar.querySelector('span').textContent = participantInitials;
+
+            // Update main speaker name
+            mainSpeakerName[0].innerHTML = `<i class="fas fa-microphone${participantMic === 'off' ? '-slash' : ''} text-${participantMic === 'off' ? 'red' : 'green'}-500 mr-2"></i>${participantName}`;
+            mainSpeakerName[1].textContent = participantName;
+
+            // Add pinned indicator to main speaker
+            mainSpeaker.classList.add('pinned-indicator');
+
+            // Show notification
+            showNotification(`${participantName} telah di-pin sebagai speaker utama`);
+
+            // Store pinned participant
+            pinnedParticipant = participantName;
+        }
+
+        // Notification function
+        function showNotification(message) {
+            // Remove existing notification
+            const existingNotif = document.querySelector('.pin-notification');
+            if (existingNotif) {
+                existingNotif.remove();
+            }
+
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'pin-notification fixed top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
+            notification.innerHTML = `
+                <i class="fas fa-thumbtack"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>

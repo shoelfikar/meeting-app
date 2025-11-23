@@ -1,7 +1,7 @@
 .PHONY: help build up down restart logs ps clean deploy dev prod stop start rebuild backend frontend redis health check-network create-network
 
 # Variables
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE = docker compose
 BACKEND_PATH = ./meet-app-backend
 FRONTEND_PATH = ./meet-app-frontend
 NETWORK_NAME = server_network

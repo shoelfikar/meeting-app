@@ -49,7 +49,7 @@ services:
       - JWT_REFRESH_EXPIRY=168h
 
       # CORS
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://meet-frontend,http://frontend
       - CORS_ALLOWED_METHODS=GET,POST,PUT,PATCH,DELETE,OPTIONS
       - CORS_ALLOWED_HEADERS=Origin,Content-Type,Authorization
 
@@ -94,11 +94,11 @@ services:
     build:
       context: ./meet-app-frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://meet-backend:8080
+        - VITE_WS_URL=ws://meet-backend:8080
     container_name: meet-frontend
     restart: unless-stopped
-    environment:
-      - VITE_API_URL=http://localhost:8080
-      - VITE_WS_URL=ws://localhost:8080
     ports:
       - "3000:80"
     networks:

@@ -12,69 +12,104 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - internal-network
+      - server_network
 
-  # MinIO (S3-compatible storage for recordings)
-  minio:
-    image: minio/minio:latest
-    container_name: meet-minio
+  # Backend API
+  backend:
+    build:
+      context: ./meet-app-backend
+      dockerfile: Dockerfile
+    container_name: meet-backend
     restart: unless-stopped
-    command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      # Server
+      - PORT=8080
+      - GIN_MODE=release
+      - ENVIRONMENT=production
+
+      # Database
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=meetapp
+      - DB_SSLMODE=disable
+      - DB_MAX_CONNECTIONS=25
+      - DB_MAX_IDLE_CONNECTIONS=5
+
+      # Redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+
+      # JWT
+      - JWT_SECRET=your-super-secret-key-change-this-in-production
+      - JWT_EXPIRY=24h
+      - JWT_REFRESH_EXPIRY=168h
+
+      # CORS
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+      - CORS_ALLOWED_METHODS=GET,POST,PUT,PATCH,DELETE,OPTIONS
+      - CORS_ALLOWED_HEADERS=Origin,Content-Type,Authorization
+
+      # MinIO
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin123
+      - MINIO_USE_SSL=false
+      - MINIO_BUCKET_NAME=meeting-recordings
+      - MINIO_REGION=us-east-1
+
+      # WebRTC
+      - STUN_SERVER=stun:stun.l.google.com:19302
+
+      # WebSocket
+      - WS_READ_BUFFER_SIZE=1024
+      - WS_WRITE_BUFFER_SIZE=1024
+      - WS_MAX_MESSAGE_SIZE=512000
+
+      # Rate Limiting
+      - RATE_LIMIT_REQUESTS=100
+      - RATE_LIMIT_WINDOW=1m
+
+      # Logging
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+
+      # Meeting
+      - MAX_PARTICIPANTS_PER_MEETING=50
+      - MEETING_CODE_LENGTH=10
+      - DEFAULT_MEETING_DURATION=3600
     ports:
-      - "9000:9000"  # API
-      - "9001:9001"  # Console
-    volumes:
-      - minio_data:/data
+      - "8080:8080"
     networks:
-      - internal-network
+      - server_network
+    depends_on:
+      redis:
+        condition: service_started
 
-  # Backend API (uncomment when ready)
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: meet-backend
-  #   restart: unless-stopped
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
-  #     - JWT_SECRET=your-super-secret-key
-  #     - MINIO_ENDPOINT=minio:9000
-  #     - MINIO_ACCESS_KEY=minioadmin
-  #     - MINIO_SECRET_KEY=minioadmin123
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - internal-network
-  #   depends_on:
-  #     - redis
-  #     - minio
-
-  # Frontend (uncomment when ready)
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: meet-frontend
-  #   restart: unless-stopped
-  #   environment:
-  #     - VITE_API_URL=http://localhost:8080
-  #   ports:
-  #     - "3000:80"
-  #   networks:
-  #     - internal-network
-  #   depends_on:
-  #     - backend
+  # Frontend
+  frontend:
+    build:
+      context: ./meet-app-frontend
+      dockerfile: Dockerfile
+    container_name: meet-frontend
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://localhost:8080
+      - VITE_WS_URL=ws://localhost:8080
+    ports:
+      - "3000:80"
+    networks:
+      - server_network
+    depends_on:
+      - backend
 
 networks:
-  internal-network:
+  server_network:
     external: true
 
 volumes:
   redis_data:
-    driver: local
-  minio_data:
     driver: local

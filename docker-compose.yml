@@ -4,11 +4,11 @@ services:
   # Redis Cache & Pub/Sub
   redis:
     image: redis:7-alpine
-    container_name: meet-redis
+    container_name: ${REDIS_CONTAINER_NAME:-meet-redis}
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -19,70 +19,78 @@ services:
     build:
       context: ./meet-app-backend
       dockerfile: Dockerfile
-    container_name: meet-backend
+    container_name: ${BACKEND_CONTAINER_NAME:-meet-backend}
     restart: unless-stopped
     environment:
       # Server
-      - PORT=8080
-      - GIN_MODE=release
-      - ENVIRONMENT=production
+      - PORT=${BACKEND_PORT}
+      - GIN_MODE=${GIN_MODE}
+      - ENVIRONMENT=${ENVIRONMENT}
 
       # Database
-      - DB_HOST=postgres_server
-      - DB_PORT=5432
-      - DB_USER=shoel
-      - DB_PASSWORD=qwerty
-      - DB_NAME=meetapp
-      - DB_SSLMODE=disable
-      - DB_MAX_CONNECTIONS=25
-      - DB_MAX_IDLE_CONNECTIONS=5
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_SSLMODE=${DB_SSLMODE}
+      - DB_MAX_CONNECTIONS=${DB_MAX_CONNECTIONS}
+      - DB_MAX_IDLE_CONNECTIONS=${DB_MAX_IDLE_CONNECTIONS}
 
       # Redis
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=
-      - REDIS_DB=0
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
 
       # JWT
-      - JWT_SECRET=your-super-secret-key-change-this-in-production
-      - JWT_EXPIRY=24h
-      - JWT_REFRESH_EXPIRY=168h
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRY=${JWT_EXPIRY}
+      - JWT_REFRESH_EXPIRY=${JWT_REFRESH_EXPIRY}
 
       # CORS
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://meet-frontend,http://frontend
-      - CORS_ALLOWED_METHODS=GET,POST,PUT,PATCH,DELETE,OPTIONS
-      - CORS_ALLOWED_HEADERS=Origin,Content-Type,Authorization
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - CORS_ALLOWED_METHODS=${CORS_ALLOWED_METHODS}
+      - CORS_ALLOWED_HEADERS=${CORS_ALLOWED_HEADERS}
 
       # MinIO
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin123
-      - MINIO_USE_SSL=false
-      - MINIO_BUCKET_NAME=meeting-recordings
-      - MINIO_REGION=us-east-1
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_USE_SSL=${MINIO_USE_SSL}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
+      - MINIO_REGION=${MINIO_REGION}
 
       # WebRTC
-      - STUN_SERVER=stun:stun.l.google.com:19302
+      - STUN_SERVER=${STUN_SERVER}
 
       # WebSocket
-      - WS_READ_BUFFER_SIZE=1024
-      - WS_WRITE_BUFFER_SIZE=1024
-      - WS_MAX_MESSAGE_SIZE=512000
+      - WS_READ_BUFFER_SIZE=${WS_READ_BUFFER_SIZE}
+      - WS_WRITE_BUFFER_SIZE=${WS_WRITE_BUFFER_SIZE}
+      - WS_MAX_MESSAGE_SIZE=${WS_MAX_MESSAGE_SIZE}
+
+      # SSE
+      - SSE_RETRY_TIMEOUT=${SSE_RETRY_TIMEOUT}
+      - SSE_HEARTBEAT_INTERVAL=${SSE_HEARTBEAT_INTERVAL}
 
       # Rate Limiting
-      - RATE_LIMIT_REQUESTS=100
-      - RATE_LIMIT_WINDOW=1m
+      - RATE_LIMIT_REQUESTS=${RATE_LIMIT_REQUESTS}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW}
 
       # Logging
-      - LOG_LEVEL=info
-      - LOG_FORMAT=json
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_FORMAT=${LOG_FORMAT}
 
       # Meeting
-      - MAX_PARTICIPANTS_PER_MEETING=50
-      - MEETING_CODE_LENGTH=10
-      - DEFAULT_MEETING_DURATION=3600
+      - MAX_PARTICIPANTS_PER_MEETING=${MAX_PARTICIPANTS_PER_MEETING}
+      - MEETING_CODE_LENGTH=${MEETING_CODE_LENGTH}
+      - DEFAULT_MEETING_DURATION=${DEFAULT_MEETING_DURATION}
+
+      # File Upload
+      - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE}
+      - ALLOWED_FILE_TYPES=${ALLOWED_FILE_TYPES}
     ports:
-      - "8080:8080"
+      - "${BACKEND_PORT}:8080"
     networks:
       - server_network
     depends_on:
@@ -95,9 +103,9 @@ services:
       context: ./meet-app-frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=http://meet-backend:8080
-        - VITE_WS_URL=ws://meet-backend:8080
-    container_name: meet-frontend
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_WS_URL=${VITE_WS_URL}
+    container_name: ${FRONTEND_CONTAINER_NAME:-meet-frontend}
     restart: unless-stopped
     ports:
       - "3000:80"

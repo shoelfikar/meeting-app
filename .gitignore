@@ -105,12 +105,17 @@ pnpm-debug.log*
 # ============================================
 # ENVIRONMENT & CONFIG
 # ============================================
+# Environment files (ignored)
 .env
 .env.local
 .env.*.local
 .env.production
 .env.development
 .env.test
+
+# Keep example files (these should be committed)
+!.env.example
+!*.env.example
 
 # Secrets
 *.pem
@@ -303,5 +308,5 @@ scripts/output/
 local.sh
 dev.sh
 test.local.sh
-deploy.sh
 build.sh
+deploy.sh

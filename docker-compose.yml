@@ -3,6 +3,7 @@ version: '3.8'
 services:
   # Redis Cache & Pub/Sub
   redis:
+    platform: linux/arm64
     image: redis:7-alpine
     container_name: ${REDIS_CONTAINER_NAME:-meet-redis}
     restart: unless-stopped
@@ -16,9 +17,12 @@ services:
 
   # Backend API
   backend:
+    platform: linux/arm64
     build:
       context: ./meet-app-backend
       dockerfile: Dockerfile
+      platforms:
+        - linux/arm64
     container_name: ${BACKEND_CONTAINER_NAME:-meet-backend}
     restart: unless-stopped
     environment:
@@ -99,9 +103,12 @@ services:
 
   # Frontend
   frontend:
+    platform: linux/arm64
     build:
       context: ./meet-app-frontend
       dockerfile: Dockerfile
+      platforms:
+        - linux/arm64
       args:
         - VITE_API_URL=${VITE_API_URL}
         - VITE_WS_URL=${VITE_WS_URL}
